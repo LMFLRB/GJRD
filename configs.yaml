@@ -1,0 +1,104 @@
+experiment:
+  log_step: False
+  save_results: True
+  cuda: True
+  enable_earlystop: True
+  cluster_only: False
+  use_resnet: False
+  enable_pretrain: True
+  use_processed_data: True
+  eval_only: False
+  silent: False
+  start_tensorbord: False
+
+  log_dir: "Results"
+  log_text_path: "textlog"
+  resnet_type: "resnet18"
+  feature_type: "linear" #"conv2d" #
+
+  n_montecarlo: 100
+  n_finetune: 10
+  pretrain_epochs: 200
+  finetune_epochs: 500
+  cluster_epochs: 200
+  corruption: 0.2
+  update_freq: 20
+  delta_earlystop: 5.0e-3
+  patience: 10
+
+  max_version: 10
+
+  optimizer:
+    name: "SGD"
+    lr: 0.1
+    momentum: 0.9
+  scheduler:
+    name: "ExponentialLR" #"MultiStepLR" # "StepLR" #
+    gamma: 0.99
+  cluster_optimizer: 
+    name: "Adam" #"AdamW" #
+    lr: 1.0e-3 # 1.0e-5
+    betas: [0.9, 0.999]
+    weight_decay: 0.0
+  
+  cluster_scheduler: 
+    name: "ExponentialLR" #"MultiStepLR" # "StepLR" #
+    gamma: 0.99
+  
+  data:  
+    batch_size: 256
+    evaluate_batch_size: 1024
+    num_workers: 0
+    drop_last: False
+    
+  loss:
+    name: "GJRD"
+    entropy_order: 2.0
+    kernelsize: 5.0
+    kernelsize_adapt: True #False #
+    kernelsize_search_params: 
+      func: 'meadian' #'max' # 
+      param: 0.15 # 10 # 
+    
+    generative: False
+    
+    weights:
+      ddc1: 1.0e-0 #2.0e-2
+      ddc2: 5.0e-2
+      ddc3: 5.0e-2
+      reconst: 1.0e-0
+
+  metric: 
+    name: "cluster"
+    keys: ["acc", "nmi", "ari"]
+  
+data:
+  root_dir: "Data"
+  cuda: False
+  name: "MNIST" #"FashionMNIST" #"STL10" #
+  
+
+model:
+  name: "DDC"
+  encode_only: False
+  n_cluster: 10
+  alpha: 1.0
+
+  autoencoder:
+    network: "CNN" #"MLP" #  
+    patch_size: [28,28]
+    hidden_dims: [32,64]
+    input_dim: 1
+    latent_dim: 100
+    activation: "ReLU"
+    final_activation: "Tanh"
+    weight_init: False
+    kernel_size: 5
+    stride: 2
+    padding: 1
+    dilation: 1
+    use_maxpool: True
+    use_batchnorm: True
+
+
+  
